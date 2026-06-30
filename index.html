@@ -3,212 +3,221 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>INVEST 2026 — Dashboard</title>
+<title>INVEST 2026</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 :root{
-  --bg:#0f1117;--surface:#181c27;--card:#1e2235;--border:#2a2f45;
-  --text:#e8eaf0;--muted:#7c85a2;--accent:#4f8ef7;--green:#27c48a;
-  --yellow:#f5a623;--red:#e85c5c;--purple:#9b6ef7;
-  --font:'Inter',system-ui,sans-serif;
+  --bg:#0f1117;--s1:#181c27;--s2:#1e2235;--border:#2a2f45;
+  --text:#e8eaf0;--muted:#7c85a2;--accent:#4f8ef7;
+  --green:#27c48a;--yellow:#f5a623;--red:#e85c5c;--purple:#9b6ef7;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;min-height:100vh}
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
-
-/* NAV */
-nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;gap:0;position:sticky;top:0;z-index:100}
-.nav-logo{font-size:15px;font-weight:600;color:var(--text);padding:1rem 1.5rem 1rem 0;border-right:1px solid var(--border);margin-right:1rem;white-space:nowrap}
-.nav-logo span{color:var(--accent)}
-.nav-tab{padding:.85rem 1rem;font-size:13px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:color .15s;white-space:nowrap}
-.nav-tab:hover{color:var(--text)}
-.nav-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
-.nav-right{margin-left:auto;font-size:12px;color:var(--muted);padding:.5rem 0}
-
-/* LAYOUT */
-.page{display:none;padding:1.5rem;max-width:1100px;margin:0 auto}
+body{background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;font-size:14px}
+nav{background:var(--s1);border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;position:sticky;top:0;z-index:100;overflow-x:auto}
+.logo{font-size:15px;font-weight:700;padding:.9rem 1.2rem .9rem 0;border-right:1px solid var(--border);margin-right:.75rem;white-space:nowrap;letter-spacing:-.3px}
+.logo span{color:var(--accent)}
+.ntab{padding:.85rem .9rem;font-size:13px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;background:none;border-top:none;border-left:none;border-right:none;color:var(--muted)}
+.ntab:hover{color:var(--text)}
+.ntab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.page{display:none;padding:1.5rem;max-width:1120px;margin:0 auto}
 .page.active{display:block}
-
-/* KPI ROW */
-.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:1.5rem}
-.kpi{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1rem 1.1rem}
-.kpi-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
-.kpi-val{font-size:24px;font-weight:600;line-height:1}
-.kpi-sub{font-size:11px;color:var(--muted);margin-top:5px}
+.krow{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:10px;margin-bottom:1.25rem}
+.kpi{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:.9rem 1rem}
+.klabel{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+.kval{font-size:22px;font-weight:700;line-height:1}
+.ksub{font-size:11px;color:var(--muted);margin-top:4px}
 .pos{color:var(--green)}.neg{color:var(--red)}.neu{color:var(--yellow)}
-
-/* CARDS */
-.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.1rem 1.2rem;margin-bottom:1rem}
-.card-title{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1rem}
-.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:1rem}
-
-/* TABLES */
+.card{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:1.1rem 1.2rem;margin-bottom:1rem}
+.card.highlighted{border-color:var(--accent);background:#1a2440}
+.ctitle{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:1rem}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1rem}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:1rem}
 table{width:100%;border-collapse:collapse;font-size:13px}
-th{text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+th{text-align:left;padding:7px 9px;border-bottom:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
 th.r,td.r{text-align:right}
-td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
+td{padding:7px 9px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
 tr:last-child td{border-bottom:none}
-tr:hover td{background:rgba(255,255,255,.02)}
-
-/* BADGES */
-.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
-.b-green{background:rgba(39,196,138,.15);color:#27c48a}
-.b-yellow{background:rgba(245,166,35,.15);color:#f5a623}
-.b-red{background:rgba(232,92,92,.15);color:#e85c5c}
-.b-blue{background:rgba(79,142,247,.15);color:#4f8ef7}
-.b-gray{background:rgba(124,133,162,.12);color:#7c85a2}
-
-/* YIELD BAR */
-.ybar-wrap{display:flex;align-items:center;gap:8px}
-.ybar-track{width:56px;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+tr:hover td{background:rgba(255,255,255,.025)}
+tr.row-highlighted td{background:rgba(79,142,247,.08)}
+.badge{display:inline-block;padding:2px 7px;border-radius:20px;font-size:11px;font-weight:600}
+.bg{background:rgba(39,196,138,.14);color:#27c48a}
+.by{background:rgba(245,166,35,.14);color:#f5a623}
+.br{background:rgba(232,92,92,.14);color:#e85c5c}
+.bb{background:rgba(79,142,247,.14);color:#4f8ef7}
+.bx{background:rgba(124,133,162,.1);color:#7c85a2}
+.pizza-wrap{position:relative;width:100%;height:200px;cursor:pointer}
+.pizza-hint{font-size:11px;color:var(--muted);text-align:center;margin-top:4px}
+.leg{display:flex;flex-wrap:wrap;gap:7px;margin-top:.6rem}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);cursor:pointer;padding:2px 4px;border-radius:4px}
+.leg-item:hover{background:rgba(255,255,255,.06)}
+.leg-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.abar{margin-bottom:10px}
+.abar-head{display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px}
+.abar-track{height:7px;background:var(--border);border-radius:4px;position:relative}
+.abar-fill{height:7px;border-radius:4px;background:var(--accent);position:absolute;top:0;left:0;transition:width .4s}
+.abar-meta{position:absolute;top:-3px;height:13px;width:2px;background:var(--yellow);border-radius:1px}
+.abar.highlighted-bar .abar-track{box-shadow:0 0 0 2px var(--accent)}
+.filter-banner{background:rgba(79,142,247,.1);border:1px solid rgba(79,142,247,.3);border-radius:8px;padding:.6rem 1rem;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;font-size:13px}
+.filter-clear{background:none;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:12px;padding:3px 10px;cursor:pointer}
+.filter-clear:hover{border-color:var(--accent);color:var(--accent)}
+.aporte-card{background:var(--s2);border:1px solid var(--accent);border-radius:10px;padding:1.1rem 1.2rem;margin-bottom:1rem}
+.aporte-input-wrap{display:flex;gap:10px;align-items:center;margin-bottom:.75rem;flex-wrap:wrap}
+.aporte-input{background:var(--s1);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:18px;font-weight:700;padding:.55rem 1rem;width:180px;outline:none}
+.aporte-input:focus{border-color:var(--accent)}
+.aporte-btn{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:.55rem 1.2rem;font-size:14px;font-weight:600;cursor:pointer}
+.aporte-btn:hover{opacity:.85}
+.rank-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.rank-item:last-child{border-bottom:none}
+.rank-num{width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rank-body{flex:1;min-width:0}
+.rank-name{font-weight:600;font-size:13px}
+.rank-reason{font-size:11px;color:var(--muted);margin-top:1px}
+.rank-valor{font-size:15px;font-weight:700;color:var(--green);text-align:right;white-space:nowrap}
+.rank-pct{font-size:11px;color:var(--muted);text-align:right}
+.prog-wrap{width:60px;height:5px;background:var(--border);border-radius:3px;overflow:hidden;flex-shrink:0}
+.prog-fill{height:5px;border-radius:3px;background:var(--accent)}
+.ybar-wrap{display:flex;align-items:center;gap:7px}
+.ybar-track{width:48px;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
 .ybar-fill{height:5px;border-radius:3px}
-
-/* ALOCACAO */
-.aloc-row{margin-bottom:10px}
-.aloc-head{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px}
-.aloc-bars{display:flex;gap:3px;align-items:center}
-.aloc-track{flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;position:relative}
-.aloc-atual{height:8px;background:var(--accent);border-radius:4px;position:absolute;top:0;left:0}
-.aloc-meta-line{position:absolute;top:-2px;height:12px;width:2px;background:var(--yellow);border-radius:1px}
-
-/* HISTORICO */
-.hist-wrap{position:relative;width:100%;height:260px}
-
-/* PROVENTOS LIST */
-.prov-item{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04)}
-.prov-item:last-child{border-bottom:none}
-.prov-left{display:flex;align-items:center;gap:8px}
-.prov-ativo{font-weight:600;font-size:13px;min-width:52px}
-.prov-data{font-size:11px;color:var(--muted)}
-.tag{font-size:10px;padding:1px 6px;border-radius:10px}
-.tag-fii{background:rgba(39,196,138,.12);color:#27c48a}
-.tag-div{background:rgba(79,142,247,.12);color:#4f8ef7}
-.tag-jcp{background:rgba(245,166,35,.12);color:#f5a623}
-.tag-cra{background:rgba(155,110,247,.12);color:#9b6ef7}
-
-/* SECTION HEADING */
-.section-h{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin:1.2rem 0 .6rem}
-
-/* CHART LEGEND */
-.legend{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:8px}
-.leg-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)}
-.leg-dot{width:10px;height:10px;border-radius:2px}
-
-/* NOTA */
-.nota{background:rgba(79,142,247,.07);border:1px solid rgba(79,142,247,.2);border-radius:8px;padding:.75rem 1rem;font-size:12px;color:var(--muted);line-height:1.6;margin-top:.75rem}
-.nota b{color:var(--text)}
-
-/* RESPONSIVE */
+.sgroup{margin-bottom:1.5rem}
+.sgroup-title{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.75rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+.srow{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.srow:last-child{border-bottom:none}
+.slabel{flex:1;font-size:13px}
+.sinput{background:var(--s1);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;padding:5px 10px;width:80px;text-align:right;outline:none}
+.sinput:focus{border-color:var(--accent)}
+.sunit{font-size:12px;color:var(--muted);width:16px}
+.save-btn{background:var(--green);color:#000;border:none;border-radius:8px;padding:.65rem 1.5rem;font-size:14px;font-weight:700;cursor:pointer}
+.save-btn:hover{opacity:.85}
+.saved-msg{color:var(--green);font-size:13px;margin-left:12px;opacity:0;transition:opacity .3s}
 @media(max-width:640px){
-  .grid2,.grid3{grid-template-columns:1fr}
-  .kpi-row{grid-template-columns:1fr 1fr}
-  .kpi-val{font-size:20px}
-  nav{padding:0 .75rem;overflow-x:auto}
-  .nav-logo{font-size:13px;padding:.85rem .75rem .85rem 0}
-  .nav-tab{padding:.75rem .7rem;font-size:12px}
+  .g2,.g3{grid-template-columns:1fr}
+  .krow{grid-template-columns:1fr 1fr}
+  .kval{font-size:18px}
+  nav{padding:0 .5rem}
   .page{padding:1rem .75rem}
-  .nav-right{display:none}
 }
 </style>
 </head>
 <body>
-
 <nav>
-  <div class="nav-logo">INVEST<span>2026</span></div>
-  <div class="nav-tab active" onclick="go('dash')">Visão geral</div>
-  <div class="nav-tab" onclick="go('fiis')">FIIs</div>
-  <div class="nav-tab" onclick="go('renda')">Renda passiva</div>
-  <div class="nav-tab" onclick="go('aloc')">Alocação</div>
-  <div class="nav-tab" onclick="go('prov')">Proventos</div>
-  <div class="nav-right">Atualizado: 29/06/2026</div>
+  <div class="logo">INVEST<span>2026</span></div>
+  <button class="ntab active" onclick="go('overview')">Visão geral</button>
+  <button class="ntab" onclick="go('aporte')">Aporte</button>
+  <button class="ntab" onclick="go('fiis')">FIIs</button>
+  <button class="ntab" onclick="go('renda')">Renda passiva</button>
+  <button class="ntab" onclick="go('aloc')">Alocação</button>
+  <button class="ntab" onclick="go('cfg')">Configurações</button>
 </nav>
 
-<!-- PAGE: DASH -->
-<div id="p-dash" class="page active">
-  <div class="kpi-row">
-    <div class="kpi"><div class="kpi-label">Patrimônio total</div><div class="kpi-val">R$ 512k</div><div class="kpi-sub">Todas as classes</div></div>
-    <div class="kpi"><div class="kpi-label">FIIs</div><div class="kpi-val">R$ 104.782</div><div class="kpi-sub">14 ativos · 20,4% carteira</div></div>
-    <div class="kpi"><div class="kpi-label">Ações BR</div><div class="kpi-val">R$ 43.677</div><div class="kpi-sub">18 ativos · 8,5% carteira</div></div>
-    <div class="kpi"><div class="kpi-label">Renda passiva — jun/26</div><div class="kpi-val pos">R$ 1.093</div><div class="kpi-sub">Só FIIs · +19% vs mai/25</div></div>
+<!-- OVERVIEW -->
+<div id="p-overview" class="page active">
+  <div class="krow">
+    <div class="kpi"><div class="klabel">Patrimônio total</div><div class="kval">R$ 512k</div><div class="ksub">Jun/2026</div></div>
+    <div class="kpi"><div class="klabel">FIIs</div><div class="kval">R$ 104.782</div><div class="ksub">14 ativos · 20,4%</div></div>
+    <div class="kpi"><div class="klabel">Ações BR</div><div class="kval">R$ 43.677</div><div class="ksub">18 ativos · 8,5%</div></div>
+    <div class="kpi"><div class="klabel">Renda jun/26</div><div class="kval pos">R$ 1.093</div><div class="ksub">Yield pond. 1,04%/mês</div></div>
   </div>
-
-  <div class="grid2">
+  <div class="g3">
     <div class="card">
-      <div class="card-title">Renda passiva mensal (R$)</div>
-      <div class="legend">
-        <div class="leg-item"><div class="leg-dot" style="background:#4f8ef7"></div>FII</div>
-        <div class="leg-item"><div class="leg-dot" style="background:#27c48a"></div>Ações/outros</div>
-      </div>
-      <div style="position:relative;height:180px"><canvas id="cDash" role="img" aria-label="Renda passiva mensal FII e ações mai/2025 a jun/2026">Renda mensal de mai/2025 a jun/2026.</canvas></div>
+      <div class="ctitle">Alocação por classe</div>
+      <div class="pizza-wrap"><canvas id="pizzaClasse" role="img" aria-label="Pizza por classe">Alocação por classe.</canvas></div>
+      <div class="pizza-hint">Clique numa fatia para ver detalhes</div>
+      <div class="leg" id="legClasse"></div>
     </div>
     <div class="card">
-      <div class="card-title">Top FIIs por renda — jun/26</div>
-      <table>
-        <tr><th>Ativo</th><th class="r">Rend/cota</th><th class="r">Total</th><th class="r">Yield m.</th></tr>
-        <tr><td><b>RZTR11</b></td><td class="r">R$ 1,000</td><td class="r pos">R$ 168,00</td><td class="r"><span class="badge b-green">1,11%</span></td></tr>
-        <tr><td><b>XPML11</b></td><td class="r">R$ 0,920</td><td class="r pos">R$ 172,96</td><td class="r"><span class="badge b-green">0,88%</span></td></tr>
-        <tr><td><b>HGLG11</b></td><td class="r">R$ 1,100</td><td class="r pos">R$ 39,60</td><td class="r"><span class="badge b-green">0,73%</span></td></tr>
-        <tr><td><b>AFHI11</b></td><td class="r">R$ 1,030</td><td class="r pos">R$ 107,12</td><td class="r"><span class="badge b-green">1,08%</span></td></tr>
-        <tr><td><b>IFRA11</b></td><td class="r">R$ 1,000</td><td class="r pos">R$ 87,00</td><td class="r"><span class="badge b-green">1,08%</span></td></tr>
+      <div class="ctitle">Setores FII</div>
+      <div class="pizza-wrap"><canvas id="pizzaFII" role="img" aria-label="Pizza setores FII">Setores FII.</canvas></div>
+      <div class="pizza-hint">Clique numa fatia para ver detalhes</div>
+      <div class="leg" id="legFII"></div>
+    </div>
+    <div class="card">
+      <div class="ctitle">Setores ações</div>
+      <div class="pizza-wrap"><canvas id="pizzaAcoes" role="img" aria-label="Pizza setores ações">Setores ações.</canvas></div>
+      <div class="pizza-hint">Clique numa fatia para ver detalhes</div>
+      <div class="leg" id="legAcoes"></div>
+    </div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">Macro — atual vs meta</div>
+      <div id="alocMiniOverview"></div>
+    </div>
+    <div class="card">
+      <div class="ctitle">Top FIIs — yield jun/26</div>
+      <table><tr><th>Ativo</th><th class="r">Rend/cota</th><th class="r">Yield m.</th></tr>
+        <tr><td><b>RZTR11</b></td><td class="r">R$ 1,000</td><td class="r"><span class="badge bg">1,11%</span></td></tr>
+        <tr><td><b>AFHI11</b></td><td class="r">R$ 1,030</td><td class="r"><span class="badge bg">1,08%</span></td></tr>
+        <tr><td><b>IFRA11</b></td><td class="r">R$ 1,000</td><td class="r"><span class="badge bg">1,08%</span></td></tr>
+        <tr><td><b>HGLG11</b></td><td class="r">R$ 1,100</td><td class="r"><span class="badge bg">0,73%</span></td></tr>
+        <tr><td><b>XPML11</b></td><td class="r">R$ 0,920</td><td class="r"><span class="badge by">0,88%</span></td></tr>
+        <tr><td><b>BTLG11</b></td><td class="r">R$ 0,810</td><td class="r"><span class="badge by">0,79%</span></td></tr>
       </table>
     </div>
   </div>
-
-  <div class="card">
-    <div class="card-title">Alocação atual vs meta</div>
-    <div id="aloc-mini"></div>
-  </div>
 </div>
 
-<!-- PAGE: FIIs -->
-<div id="p-fiis" class="page">
-  <div class="kpi-row">
-    <div class="kpi"><div class="kpi-label">Patrimônio FII</div><div class="kpi-val">R$ 104.782</div><div class="kpi-sub">14 ativos</div></div>
-    <div class="kpi"><div class="kpi-label">Renda jun/26</div><div class="kpi-val pos">R$ 1.094</div><div class="kpi-sub">Yield mensal pond.: <b>1,04%</b></div></div>
-    <div class="kpi"><div class="kpi-label">Yield anualizado</div><div class="kpi-val">13,2%</div><div class="kpi-sub">Sobre preço fechamento</div></div>
-    <div class="kpi"><div class="kpi-label">Yield sobre PM</div><div class="kpi-val">12,8%</div><div class="kpi-sub">Sobre preço médio pago</div></div>
+<!-- APORTE -->
+<div id="p-aporte" class="page">
+  <div class="aporte-card">
+    <div class="ctitle">Calculadora de aporte</div>
+    <div class="aporte-input-wrap">
+      <span style="font-size:14px;color:var(--muted)">Valor disponível: R$</span>
+      <input class="aporte-input" type="number" id="valorAporte" value="20000" min="0" step="1000">
+      <button class="aporte-btn" onclick="calcAporte()">Calcular</button>
+    </div>
+    <div style="font-size:12px;color:var(--muted)">Distribui priorizando os ativos mais distantes da meta. Metas editáveis em Configurações.</div>
   </div>
   <div class="card">
-    <div class="card-title">Posição detalhada — jun/26</div>
-    <div style="overflow-x:auto">
-    <table id="fii-table">
-      <tr>
-        <th>Código</th><th>Tipo</th><th class="r">Qtd</th><th class="r">PM (R$)</th>
-        <th class="r">Preço atual</th><th class="r">±</th>
-        <th class="r">Rend/cota</th><th class="r">Total recebido</th>
-        <th class="r">Yield mensal</th><th class="r">Yield anual</th>
-      </tr>
-    </table>
-    </div>
-    <div style="margin-top:.5rem;font-size:11px;color:var(--muted)">Preço de fechamento B3 · 29/06/2026 &nbsp;·&nbsp; <span class="pos">■</span> ≥ 1,0%  <span class="neu">■</span> 0,5–1,0%  <span class="neg">■</span> &lt; 0,5%</div>
+    <div class="ctitle">Ranking de prioridade</div>
+    <div id="rankList"></div>
   </div>
-</div>
-
-<!-- PAGE: RENDA PASSIVA -->
-<div id="p-renda" class="page">
-  <div class="kpi-row">
-    <div class="kpi"><div class="kpi-label">2022 total</div><div class="kpi-val">R$ 9.522</div><div class="kpi-sub">Média R$ 794/mês</div></div>
-    <div class="kpi"><div class="kpi-label">2023 total</div><div class="kpi-val">R$ 12.058</div><div class="kpi-sub">Média R$ 1.005/mês</div></div>
-    <div class="kpi"><div class="kpi-label">2024 total</div><div class="kpi-val">R$ 15.252</div><div class="kpi-sub">Média R$ 1.271/mês</div></div>
-    <div class="kpi"><div class="kpi-label">2025 total</div><div class="kpi-val">R$ 21.739</div><div class="kpi-sub">Média R$ 1.812/mês</div></div>
-    <div class="kpi"><div class="kpi-label">2026 meta</div><div class="kpi-val neu">R$ 26.000</div><div class="kpi-sub">R$ 2.167/mês</div></div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Evolução histórica — jan/2022 a jun/2026</div>
-    <div class="legend">
-      <div class="leg-item"><div class="leg-dot" style="background:#4f8ef7"></div>Renda mensal (R$)</div>
-      <div class="leg-item"><div class="leg-dot" style="background:#f5a623;opacity:.7"></div>Meta mensal 2026 (R$ 2.167)</div>
-    </div>
-    <div style="position:relative;height:280px"><canvas id="cHist" role="img" aria-label="Renda passiva mensal de jan/2022 a jun/2026">Histórico de renda passiva mensal.</canvas></div>
-  </div>
-
-  <div class="grid2">
+  <div class="g2">
     <div class="card">
-      <div class="card-title">Proventos mai–nov/2025 (sua planilha)</div>
-      <table>
-        <tr><th>Mês</th><th class="r">FIIs</th><th class="r">Ações/outros</th><th class="r">Total</th></tr>
+      <div class="ctitle">Distribuição sugerida</div>
+      <div style="position:relative;height:250px"><canvas id="pizzaAporte" role="img" aria-label="Pizza aporte">Distribuição do aporte.</canvas></div>
+    </div>
+    <div class="card">
+      <div class="ctitle">Antes → depois do aporte</div>
+      <div id="antesDepois"></div>
+    </div>
+  </div>
+</div>
+
+<!-- FIIs -->
+<div id="p-fiis" class="page">
+  <div class="krow">
+    <div class="kpi"><div class="klabel">Patrimônio FII</div><div class="kval">R$ 104.782</div><div class="ksub">14 ativos</div></div>
+    <div class="kpi"><div class="klabel">Renda jun/26</div><div class="kval pos">R$ 1.094</div><div class="ksub">Yield pond. 1,04%/mês</div></div>
+    <div class="kpi"><div class="klabel">Yield anualizado</div><div class="kval">13,2%</div><div class="ksub">Sobre preço fechamento</div></div>
+    <div class="kpi"><div class="klabel">Yield sobre PM</div><div class="kval">12,8%</div><div class="ksub">Sobre preço médio</div></div>
+  </div>
+  <div class="card" style="overflow-x:auto">
+    <div class="ctitle">Posição detalhada — jun/26</div>
+    <table id="fiiTable">
+      <tr><th>Código</th><th>Tipo</th><th class="r">Qtd</th><th class="r">PM</th><th class="r">Preço</th><th class="r">±</th><th class="r">Rend/cota</th><th class="r">Total</th><th class="r">Yield m.</th><th class="r">Yield a.</th></tr>
+    </table>
+    <div style="margin-top:.5rem;font-size:11px;color:var(--muted)"><span class="pos">■</span> ≥1,0% &nbsp;<span class="neu">■</span> 0,5–1,0% &nbsp;<span class="neg">■</span> &lt;0,5%</div>
+  </div>
+</div>
+
+<!-- RENDA -->
+<div id="p-renda" class="page">
+  <div class="krow">
+    <div class="kpi"><div class="klabel">2022</div><div class="kval">R$ 9.522</div><div class="ksub">Média R$ 794/mês</div></div>
+    <div class="kpi"><div class="klabel">2023</div><div class="kval">R$ 12.058</div><div class="ksub">Média R$ 1.005/mês</div></div>
+    <div class="kpi"><div class="klabel">2024</div><div class="kval">R$ 15.252</div><div class="ksub">Média R$ 1.271/mês</div></div>
+    <div class="kpi"><div class="klabel">2025</div><div class="kval">R$ 21.739</div><div class="ksub">Média R$ 1.812/mês</div></div>
+    <div class="kpi"><div class="klabel">Meta 2026</div><div class="kval neu">R$ 26.000</div><div class="ksub">R$ 2.167/mês</div></div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Evolução histórica — jan/2022 a mar/2026</div>
+    <div style="position:relative;height:270px"><canvas id="cHist" role="img" aria-label="Histórico">Renda passiva histórica.</canvas></div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">Proventos mai–out/2025</div>
+      <table><tr><th>Mês</th><th class="r">FII</th><th class="r">Ações</th><th class="r">Total</th></tr>
         <tr><td>Mai/25</td><td class="r">R$ 1.293</td><td class="r">R$ 243</td><td class="r"><b>R$ 1.536</b></td></tr>
         <tr><td>Jun/25</td><td class="r">R$ 1.357</td><td class="r">R$ 326</td><td class="r"><b>R$ 1.683</b></td></tr>
         <tr><td>Jul/25</td><td class="r">R$ 1.510</td><td class="r">R$ 88</td><td class="r"><b>R$ 1.598</b></td></tr>
@@ -218,15 +227,13 @@ tr:hover td{background:rgba(255,255,255,.02)}
       </table>
     </div>
     <div class="card">
-      <div class="card-title">Top ativos por renda acumulada</div>
-      <table>
-        <tr><th>Ativo</th><th class="r">Total acumulado</th></tr>
+      <div class="ctitle">Top ativos acumulado</div>
+      <table><tr><th>Ativo</th><th class="r">Total</th></tr>
         <tr><td><b>RZTR11</b></td><td class="r pos">R$ 1.079</td></tr>
         <tr><td><b>XPML11</b></td><td class="r pos">R$ 1.020</td></tr>
         <tr><td><b>AFHI11</b></td><td class="r pos">R$ 1.005</td></tr>
         <tr><td><b>KNSC11</b></td><td class="r">R$ 883</td></tr>
         <tr><td><b>IRDM11</b></td><td class="r">R$ 856</td></tr>
-        <tr><td><b>TRXF11</b></td><td class="r">R$ 799</td></tr>
         <tr><td><b>TRBL11</b></td><td class="r">R$ 755</td></tr>
         <tr><td><b>BTLG11</b></td><td class="r">R$ 609</td></tr>
       </table>
@@ -234,75 +241,308 @@ tr:hover td{background:rgba(255,255,255,.02)}
   </div>
 </div>
 
-<!-- PAGE: ALOCAÇÃO -->
+<!-- ALOCAÇÃO -->
 <div id="p-aloc" class="page">
-  <div class="kpi-row">
-    <div class="kpi"><div class="kpi-label">Patrimônio total</div><div class="kpi-val">R$ 512k</div><div class="kpi-sub">Base: planilha jun/26</div></div>
-    <div class="kpi"><div class="kpi-label">Renda variável real</div><div class="kpi-val neu">29,0%</div><div class="kpi-sub">Meta: 40% · falta 11pp</div></div>
-    <div class="kpi"><div class="kpi-label">Renda fixa/caixa</div><div class="kpi-val neg">43,8%</div><div class="kpi-sub">Meta: 30% · excesso 13,8pp</div></div>
-    <div class="kpi"><div class="kpi-label">RV Dólar</div><div class="kpi-val">16,8%</div><div class="kpi-sub">Meta: 20% · falta 3,2pp</div></div>
+  <div id="filterBanner" style="display:none" class="filter-banner">
+    <span>Filtrando: <b id="filterLabel"></b></span>
+    <button class="filter-clear" onclick="clearFilter()">Limpar filtro</button>
   </div>
-
-  <div class="grid2">
-    <div class="card">
-      <div class="card-title">Macro alocação — atual vs meta</div>
-      <div id="macro-aloc"></div>
+  <div class="g2">
+    <div class="card" id="cardMacro">
+      <div class="ctitle">Macro — atual vs meta</div>
+      <div id="alocMacro2"></div>
     </div>
-    <div class="card">
-      <div class="card-title">FIIs — categorias vs meta</div>
-      <div id="fii-aloc"></div>
+    <div class="card" id="cardFIISetor">
+      <div class="ctitle">FIIs por setor — atual vs meta</div>
+      <div id="alocFII"></div>
     </div>
   </div>
-
-  <div class="card">
-    <div class="card-title">Ações BR — setores vs meta</div>
-    <div id="acoes-aloc" style="columns:2;gap:2rem"></div>
+  <div class="card" id="cardAcoesSetor">
+    <div class="ctitle">Ações por setor — atual vs meta</div>
+    <div id="alocAcoes" style="columns:2;gap:2rem"></div>
   </div>
-
-  <div class="nota">
-    <b>Leitura rápida:</b> Renda fixa está 13,8pp acima da meta — principal ajuste a fazer conforme vencimentos. FIIs estão 11pp abaixo da meta de 28% — aportes em logística e shopping têm prioridade. Ações BR estão 11pp abaixo da meta de 40% da classe RV Real.
+  <div class="card" id="cardAtivos" style="display:none">
+    <div class="ctitle" id="cardAtivosTitle">Ativos do setor</div>
+    <table id="tabelaAtivos">
+      <tr><th>Código</th><th>Nome</th><th class="r">Qtd</th><th class="r">Preço médio</th><th class="r">Preço atual</th><th class="r">±</th><th class="r">Total atual</th></tr>
+    </table>
+  </div>
+  <div class="card" style="background:rgba(79,142,247,.05);border-color:rgba(79,142,247,.2)">
+    <div class="ctitle">Leitura rápida</div>
+    <div style="font-size:13px;color:var(--muted);line-height:1.8" id="leituraRapida"></div>
   </div>
 </div>
 
-<!-- PAGE: PROVENTOS -->
-<div id="p-prov" class="page">
-  <div class="kpi-row">
-    <div class="kpi"><div class="kpi-label">Rendimentos FII jun/26</div><div class="kpi-val pos">R$ 1.094</div><div class="kpi-sub">Isento IR</div></div>
-    <div class="kpi"><div class="kpi-label">Dividendos ações jun/26</div><div class="kpi-val">R$ 56</div><div class="kpi-sub">Isento IR</div></div>
-    <div class="kpi"><div class="kpi-label">JCP recebido jun/26</div><td><div class="kpi-val">R$ 278</div><div class="kpi-sub">IR 15% já retido</div></div>
-    <div class="kpi"><div class="kpi-label">CRA juros jun/26</div><div class="kpi-val">R$ 24</div><div class="kpi-sub">Isento IR (agro)</div></div>
-  </div>
-
-  <div class="grid2">
-    <div class="card">
-      <div class="card-title">Rendimentos FIIs — jun/26</div>
-      <div id="list-fii"></div>
-      <div class="prov-item" style="margin-top:6px;border-top:1px solid var(--border)">
-        <span style="font-weight:600">Total</span>
-        <span class="pos" style="font-weight:600">R$ 1.093,93</span>
-      </div>
+<!-- CONFIG -->
+<div id="p-cfg" class="page">
+  <div class="card">
+    <div class="ctitle">Configurações — metas de alocação</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:1rem">Edite os % meta. O cálculo de aporte e os gráficos atualizam ao salvar.</div>
+    <div class="sgroup"><div class="sgroup-title">Macro — classes de ativo</div><div id="cfgMacro"></div></div>
+    <div class="sgroup"><div class="sgroup-title">FIIs — setores</div><div id="cfgFII"></div></div>
+    <div class="sgroup"><div class="sgroup-title">Ações — setores</div><div id="cfgAcoes"></div></div>
+    <div style="display:flex;align-items:center">
+      <button class="save-btn" onclick="salvarCfg()">Salvar configurações</button>
+      <span class="saved-msg" id="savedMsg">Salvo!</span>
     </div>
-    <div class="card">
-      <div class="card-title">Proventos ações / outros — mai–jun/26</div>
-      <div id="list-acoes"></div>
-      <div class="prov-item" style="margin-top:6px;border-top:1px solid var(--border)">
-        <span style="font-weight:600">Total</span>
-        <span style="font-weight:600">R$ 357,49</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="nota">
-    <b>Como registrar mensalmente:</b> Baixe o arquivo de movimentação da XP (menu Extratos → Movimentação) e suba aqui para atualizar os dados. &nbsp;·&nbsp;
-    <b>JCP:</b> IR 15% retido na fonte — valor na conta já é líquido. &nbsp;·&nbsp;
-    <b>Dividendos e FII:</b> Isentos, sem ajuste no preço médio de compra.
   </div>
 </div>
 
 <script>
-const fmt=(n,d=2)=>n.toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});
+const f2=n=>n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+const f0=n=>n.toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0});
+const PAL=['#4f8ef7','#27c48a','#f5a623','#e85c5c','#9b6ef7','#f77b4f','#4fc8f7','#c4a827','#e85cb8'];
 
-// DATA
+const DEFAULT_CFG={
+  macro:[
+    {cat:'Renda Fixa/Caixa',atual:43.8,meta:30},
+    {cat:'FIIs',atual:20.4,meta:28},
+    {cat:'Ações BR',atual:8.5,meta:12},
+    {cat:'RV Dólar',atual:16.8,meta:20},
+    {cat:'Dólar RF',atual:10.4,meta:10},
+  ],
+  fiiSetores:[
+    {cat:'Logística',atual:24.3,meta:27},
+    {cat:'Shopping',atual:28.2,meta:20},
+    {cat:'Papel',atual:17.9,meta:8},
+    {cat:'FI-Infra',atual:15.8,meta:12},
+    {cat:'Terra',atual:14.4,meta:12},
+    {cat:'Laje',atual:1.0,meta:1},
+  ],
+  acoesSetores:[
+    {cat:'Banco',atual:24.1,meta:30},
+    {cat:'ETF',atual:8.1,meta:15},
+    {cat:'Energia',atual:8.0,meta:15.2},
+    {cat:'Telefonia',atual:11.8,meta:8},
+    {cat:'Saneamento',atual:4.9,meta:6},
+    {cat:'Logística',atual:5.0,meta:5},
+    {cat:'Saúde',atual:2.9,meta:4},
+    {cat:'Construtora',atual:4.5,meta:6},
+  ]
+};
+function loadCfg(){try{return JSON.parse(localStorage.getItem('inv2026cfg'))||DEFAULT_CFG;}catch(e){return DEFAULT_CFG;}}
+function saveCfg(c){localStorage.setItem('inv2026cfg',JSON.stringify(c));}
+let CFG=loadCfg();
+
+// Ativos por setor para drill-down
+const ATIVOS_SETOR={
+  // FII
+  'Logística':[
+    {cod:'BTLG11',nome:'BTG Pactual Logística',qtd:137,pm:98.41,preco:102.50},
+    {cod:'ALZR11',nome:'Alianza Trust',qtd:560,pm:10.71,preco:10.00},
+    {cod:'LVBI11',nome:'VBI Logístico',qtd:59,pm:111.93,preco:103.95},
+    {cod:'HGLG11',nome:'Pátria Log',qtd:36,pm:158.38,preco:151.55},
+    {cod:'TRBL11',nome:'Tellus RB Log',qtd:75,pm:78.26,preco:62.00},
+  ],
+  'Shopping':[
+    {cod:'XPML11',nome:'XP Malls',qtd:188,pm:103.42,preco:104.13},
+    {cod:'CPSH11',nome:'Capitânia Shoppings',qtd:950,pm:10.97,preco:10.00},
+  ],
+  'Papel':[
+    {cod:'AFHI11',nome:'AF Invest CRI',qtd:104,pm:98.12,preco:95.60},
+    {cod:'KNSC11',nome:'Kinea Securities',qtd:960,pm:8.81,preco:9.16},
+  ],
+  'FI-Infra':[
+    {cod:'IFRA11',nome:'Itaú Infra FII',qtd:87,pm:97.31,preco:92.72},
+    {cod:'JURO11',nome:'Sparta Infra',qtd:88,pm:104.94,preco:96.08},
+  ],
+  'Terra':[
+    {cod:'RZTR11',nome:'Riza Terrax',qtd:168,pm:90.72,preco:89.75},
+  ],
+  'Laje':[
+    {cod:'VINO11',nome:'Vinci Offices',qtd:230,pm:10.67,preco:4.75},
+  ],
+  // Ações
+  'Banco':[
+    {cod:'ITSA4F',nome:'Itaúsa',qtd:618,pm:9.09,preco:13.52},
+    {cod:'ITUB4F',nome:'Itaú Unibanco',qtd:118,pm:25.86,preco:42.41},
+    {cod:'BBAS3F',nome:'Banco do Brasil',qtd:125,pm:26.52,preco:20.26},
+    {cod:'BRSR6',nome:'Banrisul',qtd:150,pm:12.96,preco:13.92},
+    {cod:'ABCB4F',nome:'ABC Brasil',qtd:50,pm:21.45,preco:25.19},
+  ],
+  'ETF':[
+    {cod:'DIVO11',nome:'IT Now IDIV',qtd:28,pm:113.28,preco:125.75},
+    {cod:'SMAL11',nome:'iShares Small Cap',qtd:28,pm:110.27,preco:108.38},
+    {cod:'USDB11',nome:'Investo US Bond',qtd:107,pm:103.45,preco:100.73},
+  ],
+  'Energia':[
+    {cod:'EGIE3F',nome:'Engie Brasil',qtd:126,pm:29.14,preco:34.18},
+    {cod:'CMIG4F',nome:'Cemig',qtd:150,pm:11.09,preco:10.95},
+  ],
+  'Telefonia':[
+    {cod:'VIVT3F',nome:'Telefônica Brasil',qtd:150,pm:25.30,preco:34.40},
+  ],
+  'Saneamento':[
+    {cod:'SAPR3F',nome:'Sanepar',qtd:246,pm:4.26,preco:8.63},
+  ],
+  'Saúde':[
+    {cod:'FLRY3F',nome:'Fleury',qtd:80,pm:21.65,preco:15.58},
+  ],
+  'Construtora':[
+    {cod:'JHSF3F',nome:'JHSF Part.',qtd:94,pm:0,preco:11.43},
+    {cod:'MTRE3',nome:'Mitre Realty',qtd:260,pm:4.99,preco:3.38},
+  ],
+};
+
+// ── PIZZA ──
+let pizzaCharts={};
+function makePizza(canvasId,labels,data,colors,onClickCb){
+  const ctx=document.getElementById(canvasId);
+  if(!ctx)return;
+  const ch=new Chart(ctx,{
+    type:'doughnut',
+    data:{labels,datasets:[{data,backgroundColor:colors,borderColor:'#0f1117',borderWidth:2,hoverOffset:6}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'60%',
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.label}: ${c.parsed.toFixed(1)}%`}}},
+      onClick:(evt,els)=>{
+        if(els.length>0&&onClickCb){
+          onClickCb(labels[els[0].index],els[0].index);
+        }
+      }
+    }
+  });
+  pizzaCharts[canvasId]=ch;
+}
+
+function makeLeg(elId,labels,colors,onClickCb){
+  const el=document.getElementById(elId);
+  if(!el)return;
+  el.innerHTML=labels.map((l,i)=>`
+    <div class="leg-item" onclick="${onClickCb?`legClick('${l}')`:''}" title="Clique para ver detalhes">
+      <div class="leg-dot" style="background:${colors[i]}"></div>${l}
+    </div>`).join('');
+}
+
+// ── DRILL DOWN ──
+let currentFilter=null;
+function drillTo(setor, grupo){
+  // grupo: 'macro'|'fii'|'acoes'
+  currentFilter={setor,grupo};
+  go('aloc');
+  setTimeout(()=>{
+    // banner
+    document.getElementById('filterBanner').style.display='flex';
+    document.getElementById('filterLabel').textContent=setor;
+    // highlight barra certa
+    highlightBar(setor, grupo);
+    // mostrar tabela
+    showAtivosSetor(setor);
+    // scroll suave até tabela
+    setTimeout(()=>{
+      const el=document.getElementById('cardAtivos');
+      if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+    },200);
+  },80);
+}
+
+function highlightBar(setor, grupo){
+  document.querySelectorAll('.abar').forEach(el=>{
+    el.classList.remove('highlighted-bar');
+    el.style.padding='0';
+    el.style.background='none';
+    el.style.borderRadius='0';
+  });
+  document.querySelectorAll('.card').forEach(c=>{
+    c.classList.remove('highlighted');
+  });
+  // highlight card correto
+  const cardId=grupo==='macro'?'cardMacro':grupo==='fii'?'cardFIISetor':'cardAcoesSetor';
+  document.getElementById(cardId)?.classList.add('highlighted');
+  // highlight barra
+  document.querySelectorAll('.abar').forEach(el=>{
+    const head=el.querySelector('.abar-head span');
+    if(head&&head.textContent.trim()===setor){
+      el.classList.add('highlighted-bar');
+      el.style.padding='6px 8px';
+      el.style.background='rgba(79,142,247,.08)';
+      el.style.borderRadius='6px';
+    }
+  });
+}
+
+function showAtivosSetor(setor){
+  const ativos=ATIVOS_SETOR[setor];
+  const card=document.getElementById('cardAtivos');
+  const title=document.getElementById('cardAtivosTitle');
+  const tbody=document.getElementById('tabelaAtivos');
+  if(!ativos||ativos.length===0){card.style.display='none';return;}
+  card.style.display='block';
+  title.textContent=`Ativos — ${setor}`;
+  // limpa linhas antigas (mantém header)
+  while(tbody.rows.length>1) tbody.deleteRow(1);
+  let totalAtual=0;
+  ativos.forEach(a=>{
+    const ta=a.qtd*a.preco;
+    totalAtual+=ta;
+    const pl=a.pm>0?((a.preco-a.pm)/a.pm*100):null;
+    const plStr=pl!==null?(pl>=0?'+':'')+pl.toFixed(1)+'%':'—';
+    const plCls=pl===null?'':pl>=0?'pos':'neg';
+    const tr=tbody.insertRow();
+    tr.className='row-highlighted';
+    tr.innerHTML=`
+      <td><b>${a.cod}</b></td>
+      <td style="color:var(--muted)">${a.nome}</td>
+      <td class="r">${a.qtd.toLocaleString('pt-BR')}</td>
+      <td class="r">${a.pm>0?'R$ '+f2(a.pm):'—'}</td>
+      <td class="r">R$ ${f2(a.preco)}</td>
+      <td class="r"><span class="${plCls}">${plStr}</span></td>
+      <td class="r">R$ ${f0(ta)}</td>`;
+  });
+  // total
+  const tr=tbody.insertRow();
+  tr.innerHTML=`<td colspan="6" style="font-weight:700;color:var(--muted);font-size:11px;text-transform:uppercase">Total</td><td class="r" style="font-weight:700">R$ ${f0(totalAtual)}</td>`;
+}
+
+function clearFilter(){
+  currentFilter=null;
+  document.getElementById('filterBanner').style.display='none';
+  document.getElementById('cardAtivos').style.display='none';
+  document.querySelectorAll('.card').forEach(c=>c.classList.remove('highlighted'));
+  document.querySelectorAll('.abar').forEach(el=>{
+    el.classList.remove('highlighted-bar');
+    el.style.padding='0';
+    el.style.background='none';
+    el.style.borderRadius='0';
+  });
+}
+
+// callbacks legenda
+function legClick(setor){
+  const fiiCats=CFG.fiiSetores.map(r=>r.cat);
+  const acoesCats=CFG.acoesSetores.map(r=>r.cat);
+  const macroCats=CFG.macro.map(r=>r.cat);
+  const grupo=fiiCats.includes(setor)?'fii':acoesCats.includes(setor)?'acoes':'macro';
+  drillTo(setor,grupo);
+}
+
+// ── ALOCAÇÃO BARS ──
+function renderAlocBars(elId,rows,grupo){
+  const el=document.getElementById(elId);
+  if(!el)return;
+  el.innerHTML='';
+  rows.forEach(r=>{
+    const diff=r.atual-r.meta;
+    const ds=(diff>=0?'+':'')+diff.toFixed(1)+'pp';
+    const dc=Math.abs(diff)<=2?'pos':diff>0?'neg':'neu';
+    const mx=Math.max(r.atual,r.meta,1);
+    const aw=Math.min(98,(r.atual/mx*100)).toFixed(1);
+    const mw=Math.min(98,(r.meta/mx*100)).toFixed(1);
+    const bar=document.createElement('div');
+    bar.className='abar';
+    bar.style.cursor='pointer';
+    bar.title=`Clique para ver ativos de ${r.cat}`;
+    bar.innerHTML=`
+      <div class="abar-head">
+        <span>${r.cat}</span>
+        <span><span class="${dc}">${ds}</span> <span style="color:var(--muted);font-size:10px">${r.atual.toFixed(1)}% / meta ${r.meta}%</span></span>
+      </div>
+      <div class="abar-track"><div class="abar-fill" style="width:${aw}%"></div><div class="abar-meta" style="left:${mw}%"></div></div>`;
+    bar.addEventListener('click',()=>drillTo(r.cat,grupo));
+    el.appendChild(bar);
+  });
+}
+
+// ── FII TABLE ──
 const fiis=[
   {cod:'AFHI11',tipo:'Papel',qtd:104,pm:98.12,preco:95.60,rend:1.03,total:107.12},
   {cod:'ALZR11',tipo:'Logística',qtd:560,pm:10.71,preco:10.00,rend:0.084,total:46.78},
@@ -319,233 +559,202 @@ const fiis=[
   {cod:'VINO11',tipo:'Laje',qtd:230,pm:10.67,preco:4.75,rend:0.04,total:9.20},
   {cod:'XPML11',tipo:'Shopping',qtd:188,pm:103.42,preco:104.13,rend:0.92,total:172.96},
 ];
-
-const provFII=[
-  {a:'RZTR11',d:'08/06',r:1.00,t:168.00},
-  {a:'XPML11',d:'25/06',r:0.92,t:172.96},
-  {a:'AFHI11',d:'22/06',r:1.03,t:107.12},
-  {a:'BTLG11',d:'25/06',r:0.81,t:110.97},
-  {a:'CPSH11',d:'22/06',r:0.11,t:104.50},
-  {a:'KNSC11',d:'12/06',r:0.10,t:96.00},
-  {a:'IFRA11',d:'08/06',r:1.00,t:87.00},
-  {a:'TRBL11',d:'15/06',r:0.85,t:63.75},
-  {a:'ALZR11',d:'25/06',r:0.084,t:46.78},
-  {a:'JURO11',d:'15/06',r:0.50,t:44.00},
-  {a:'LVBI11',d:'08/06',r:0.75,t:44.25},
-  {a:'HGLG11',d:'15/06',r:1.10,t:39.60},
-  {a:'VINO11',d:'15/06',r:0.04,t:9.20},
-].sort((a,b)=>b.t-a.t);
-
-const provAcoes=[
-  {a:'SAPR3',tipo:'JCP',t:199.37,obs:'IR 15% retido'},
-  {a:'BRSR6',tipo:'JCP',t:27.23,obs:'IR 15% retido'},
-  {a:'BBAS3',tipo:'JCP',t:14.57,obs:'IR 15% retido'},
-  {a:'MTRE3',tipo:'Dividendo',t:22.12,obs:'Isento'},
-  {a:'CRA',tipo:'Juros CRA',t:23.62,obs:'Isento'},
-  {a:'JHSF3',tipo:'Dividendo',t:6.50,obs:'Isento'},
-  {a:'GOAU4',tipo:'Dividendo',t:5.28,obs:'Isento'},
-  {a:'AUAU3',tipo:'Dividendo',t:6.05,obs:'Isento'},
-  {a:'COGN3',tipo:'Dividendo',t:1.07,obs:'Isento'},
-  {a:'VSTE3',tipo:'Dividendo',t:1.87,obs:'Isento'},
-  {a:'ITUB4',tipo:'JCP',t:1.77,obs:'IR 15% retido'},
-].sort((a,b)=>b.t-a.t);
-
-// hist labels from 2022
-const histMonths=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
-const hist22=[634,658,914,799,736,805,856,814,803,863,703,937];
-const hist23=[974,849,1054,940,1021,1055,1035,1053,1025,1024,1000,1028];
-const hist24=[1170,1010,1502,1200,1200,1200,1200,1200,1100,1200,1700,1570];
-const hist25=[1600,1400,2000,1579,1800,1700,1774,1813,1500,1500,2173,2900];
-const hist26=[1600,1700,1800,null,null,null];
-const allLabels=[];const allData=[];
-[hist22,hist23,hist24,hist25].forEach((yr,i)=>yr.forEach((v,m)=>{allLabels.push(histMonths[m]+'/'+(22+i));allData.push(v);}));
-hist26.forEach((v,m)=>{if(v!==null){allLabels.push(histMonths[m]+'/26');allData.push(v);}});
-
-// Dash chart (last 14 months)
-const dashFII=[1357,1510,1369,1350,1390,231,0,0,0,1293,1357,1536,1093,0];
-const dashOut=[326,88,464,147,87,12,0,0,0,243,326,0,0,0];
-const dashLabels=['jun/25','jul/25','ago/25','set/25','out/25','nov/25','dez/25','jan/26','fev/26','mar/26','abr/26','mai/26','jun/26'];
-// use real data from proventos analysis
-const dFII=[1357,1510,1369,1350,1390,231,null,null,null,null,null,null,1093];
-const dOut=[326,88,464,147,87,12,null,null,null,null,null,null,358];
-
-// --- RENDER FII TABLE ---
 function renderFIITable(){
-  const tb=document.getElementById('fii-table');
+  const tb=document.getElementById('fiiTable');
   fiis.sort((a,b)=>(b.rend/b.preco)-(a.rend/a.preco)).forEach(f=>{
     const ym=f.preco>0&&f.rend>0?(f.rend/f.preco*100):0;
     const ya=ym>0?(Math.pow(1+ym/100,12)-1)*100:0;
     const pl=((f.preco-f.pm)/f.pm*100);
     const plStr=(pl>=0?'+':'')+pl.toFixed(1)+'%';
-    const plCls=pl>=0?'pos':'neg';
-    const bc=ym>=1?'b-green':ym>=0.5?'b-yellow':ym>0?'b-red':'b-gray';
-    const maxYm=1.5;const bw=Math.min(100,ym/maxYm*100);
     const bc2=ym>=1?'#27c48a':ym>=0.5?'#f5a623':'#e85c5c';
+    const bw=Math.min(100,ym/1.5*100).toFixed(0);
     const tr=document.createElement('tr');
     tr.innerHTML=`
       <td><b>${f.cod}</b></td>
-      <td><span class="badge b-gray" style="font-size:10px">${f.tipo}</span></td>
+      <td><span class="badge bx" style="font-size:10px">${f.tipo}</span></td>
       <td class="r">${f.qtd.toLocaleString('pt-BR')}</td>
-      <td class="r">R$ ${fmt(f.pm)}</td>
-      <td class="r">R$ ${fmt(f.preco)}</td>
-      <td class="r"><span class="${plCls}">${plStr}</span></td>
+      <td class="r">R$ ${f2(f.pm)}</td>
+      <td class="r">R$ ${f2(f.preco)}</td>
+      <td class="r"><span class="${pl>=0?'pos':'neg'}">${plStr}</span></td>
       <td class="r">${f.rend>0?'R$ '+f.rend.toFixed(3):'-'}</td>
-      <td class="r">${f.total>0?'R$ '+fmt(f.total):'-'}</td>
+      <td class="r">${f.total>0?'R$ '+f2(f.total):'-'}</td>
       <td class="r"><div class="ybar-wrap"><div class="ybar-track"><div class="ybar-fill" style="width:${bw}%;background:${bc2}"></div></div><span class="${ym>=1?'pos':ym>=0.5?'neu':ym>0?'neg':'muted'}">${ym>0?ym.toFixed(3)+'%':'-'}</span></div></td>
-      <td class="r">${ya>0?ya.toFixed(1)+'%':'-'}</td>
-    `;
+      <td class="r">${ya>0?ya.toFixed(1)+'%':'-'}</td>`;
     tb.appendChild(tr);
   });
 }
 
-// --- RENDER PROVENTOS ---
-function renderProvFII(){
-  const el=document.getElementById('list-fii');
-  provFII.forEach(p=>{
-    el.innerHTML+=`<div class="prov-item"><div class="prov-left"><span class="prov-ativo">${p.a}</span><span class="tag tag-fii">FII</span><span class="prov-data">${p.d}</span></div><span class="pos">R$ ${fmt(p.t)}</span></div>`;
-  });
-}
-function renderProvAcoes(){
-  const el=document.getElementById('list-acoes');
-  provAcoes.forEach(p=>{
-    const cls=p.tipo==='JCP'?'tag-jcp':p.tipo==='Dividendo'?'tag-div':'tag-cra';
-    el.innerHTML+=`<div class="prov-item"><div class="prov-left"><span class="prov-ativo">${p.a}</span><span class="tag ${cls}">${p.tipo}</span></div><div style="text-align:right"><div>R$ ${fmt(p.t)}</div><div class="prov-data">${p.obs}</div></div></div>`;
-  });
-}
+// ── HIST ──
+const hm=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+let histL=[],histD=[];
+[[634,658,914,799,736,805,856,814,803,863,703,937],
+ [974,849,1054,940,1021,1055,1035,1053,1025,1024,1000,1028],
+ [1170,1010,1502,1200,1200,1200,1200,1200,1100,1200,1700,1570],
+ [1600,1400,2000,1579,1800,1700,1774,1813,1500,1500,2173,2900]
+].forEach((yr,i)=>yr.forEach((v,m)=>{histL.push(hm[m]+'/'+(22+i));histD.push(v);}));
+[1600,1700,1800].forEach((v,m)=>{histL.push(hm[m]+'/26');histD.push(v);});
 
-// --- RENDER ALOCAÇÃO ---
-function renderAloc(elId, rows){
-  const el=document.getElementById(elId);
-  rows.forEach(r=>{
-    const diff=r.atual-r.meta;
-    const diffStr=(diff>=0?'+':'')+diff.toFixed(1)+'pp';
-    const dcls=Math.abs(diff)<=2?'pos':diff>0?'neg':'neu';
-    const maxV=Math.max(r.atual,r.meta,1);
-    const aw=(r.atual/maxV*100).toFixed(1);
-    const mw=(r.meta/maxV*100).toFixed(1);
-    el.innerHTML+=`<div class="aloc-row">
-      <div class="aloc-head"><span>${r.cat}</span><span><span class="${dcls}">${diffStr}</span> &nbsp;<span style="color:var(--muted);font-size:11px">${r.atual.toFixed(1)}% atual / ${r.meta}% meta</span></span></div>
-      <div style="position:relative;height:8px;background:var(--border);border-radius:4px">
-        <div style="position:absolute;top:0;left:0;height:8px;width:${aw}%;background:var(--accent);border-radius:4px;transition:width .4s"></div>
-        <div style="position:absolute;top:-2px;left:${mw}%;height:12px;width:2px;background:var(--yellow);border-radius:1px"></div>
-      </div>
-    </div>`;
-  });
-}
-
-const macroRows=[
-  {cat:'Renda Fixa / Caixa',atual:43.8,meta:30},
-  {cat:'FIIs',atual:20.4,meta:28},
-  {cat:'Ações BR',atual:8.5,meta:12},
-  {cat:'RV Dólar',atual:16.8,meta:20},
-  {cat:'Dólar RF (ETF)',atual:10.4,meta:10},
-];
-const fiiRows=[
-  {cat:'Logística',atual:24.3,meta:27},
-  {cat:'Shopping',atual:28.2,meta:20},
-  {cat:'Papel (CRI)',atual:17.9,meta:8},
-  {cat:'FI-Infra',atual:15.8,meta:12},
-  {cat:'Terra',atual:14.4,meta:12},
-  {cat:'Laje',atual:1.0,meta:1},
-];
-const acoesRows=[
-  {cat:'Banco',atual:24.1,meta:30},
-  {cat:'ETF',atual:8.1,meta:15},
-  {cat:'Energia',atual:8.0,meta:15.2},
-  {cat:'Telefonia',atual:11.8,meta:8},
-  {cat:'Saneamento',atual:4.9,meta:6},
-  {cat:'Logística',atual:5.0,meta:5},
-  {cat:'Saúde',atual:2.9,meta:4},
-  {cat:'Construtora',atual:4.5,meta:6},
-];
-
-// mini aloc for dash
-function renderAlocMini(){
-  const el=document.getElementById('aloc-mini');
-  const rows=[...macroRows];
-  rows.forEach(r=>{
-    const diff=r.atual-r.meta;
-    const diffStr=(diff>=0?'+':'')+diff.toFixed(1)+'pp';
-    const dcls=Math.abs(diff)<=2?'pos':diff>0?'neg':'neu';
-    const maxV=Math.max(r.atual,r.meta,1);
-    const aw=(r.atual/maxV*100).toFixed(1);
-    const mw=(r.meta/maxV*100).toFixed(1);
-    el.innerHTML+=`<div class="aloc-row">
-      <div class="aloc-head"><span>${r.cat}</span><span><span class="${dcls}">${diffStr}</span> &nbsp;<span style="color:var(--muted);font-size:11px">${r.atual.toFixed(1)}% / meta ${r.meta}%</span></span></div>
-      <div style="position:relative;height:6px;background:var(--border);border-radius:4px;margin-bottom:6px">
-        <div style="position:absolute;top:0;left:0;height:6px;width:${aw}%;background:var(--accent);border-radius:4px"></div>
-        <div style="position:absolute;top:-2px;left:${mw}%;height:10px;width:2px;background:var(--yellow);border-radius:1px"></div>
-      </div>
-    </div>`;
-  });
-}
-
-// --- CHARTS ---
-let chartDash=null,chartHist=null;
-
-function drawDash(){
-  if(chartDash)return;
-  const ctx=document.getElementById('cDash').getContext('2d');
-  chartDash=new Chart(ctx,{
-    type:'bar',
-    data:{
-      labels:dashLabels,
-      datasets:[
-        {label:'FII',data:dFII,backgroundColor:'rgba(79,142,247,.75)',borderRadius:3,stack:'s'},
-        {label:'Ações/outros',data:dOut,backgroundColor:'rgba(39,196,138,.65)',borderRadius:3,stack:'s'},
-      ]
-    },
-    options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': R$ '+c.parsed.y?.toLocaleString('pt-BR')}}},
-      scales:{
-        x:{stacked:true,ticks:{font:{size:10},color:'#7c85a2'},grid:{display:false}},
-        y:{stacked:true,ticks:{callback:v=>'R$ '+v.toLocaleString('pt-BR'),font:{size:10},color:'#7c85a2'},grid:{color:'rgba(255,255,255,.05)'}}
-      }
-    }
-  });
-}
-
+let chartHist=null;
 function drawHist(){
   if(chartHist)return;
   const ctx=document.getElementById('cHist').getContext('2d');
-  chartHist=new Chart(ctx,{
-    type:'bar',
-    data:{
-      labels:allLabels,
-      datasets:[
-        {label:'Renda mensal',data:allData,backgroundColor:'rgba(79,142,247,.7)',borderRadius:3},
-        {label:'Meta 2026',data:allLabels.map(l=>l.includes('/26')?2167:null),type:'line',borderColor:'rgba(245,166,35,.7)',borderWidth:1.5,borderDash:[4,4],pointRadius:0,fill:false},
-      ]
-    },
+  chartHist=new Chart(ctx,{type:'bar',
+    data:{labels:histL,datasets:[
+      {label:'Renda',data:histD,backgroundColor:'rgba(79,142,247,.7)',borderRadius:3},
+      {label:'Meta',data:histL.map(l=>l.includes('/26')?2167:null),type:'line',borderColor:'rgba(245,166,35,.65)',borderWidth:1.5,borderDash:[5,4],pointRadius:0,fill:false},
+    ]},
     options:{responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false}},
       scales:{
-        x:{ticks:{maxRotation:45,autoSkip:true,maxTicksLimit:20,font:{size:10},color:'#7c85a2'},grid:{display:false}},
+        x:{ticks:{maxRotation:45,autoSkip:true,maxTicksLimit:18,font:{size:10},color:'#7c85a2'},grid:{display:false}},
         y:{ticks:{callback:v=>'R$ '+v.toLocaleString('pt-BR'),font:{size:10},color:'#7c85a2'},grid:{color:'rgba(255,255,255,.05)'}}
       }
     }
   });
 }
 
+// ── APORTE ──
+let pizzaAporteChart=null;
+function calcAporte(){
+  const total=parseFloat(document.getElementById('valorAporte').value)||0;
+  if(total<=0)return;
+  const patTotal=512000;
+  const candidatos=[];
+  CFG.macro.forEach(r=>{const gap=r.meta-r.atual;if(gap>0)candidatos.push({nome:r.cat,tipo:'Classe',gap,meta:r.meta,atual:r.atual});});
+  CFG.fiiSetores.forEach(r=>{const gap=r.meta-r.atual;if(gap>0)candidatos.push({nome:'FII · '+r.cat,tipo:'FII',gap,meta:r.meta,atual:r.atual});});
+  candidatos.sort((a,b)=>b.gap-a.gap);
+  const totalGap=candidatos.reduce((s,c)=>s+c.gap,0);
+  const result=candidatos.slice(0,8).map((c,i)=>{
+    const pct=totalGap>0?c.gap/totalGap:0;
+    const valor=Math.round(total*pct/100)*100;
+    return{...c,valor,pct:pct*100,rank:i+1};
+  });
+  const rl=document.getElementById('rankList');
+  rl.innerHTML='';
+  result.forEach(r=>{
+    const dc=r.gap>=5?'neg':r.gap>=2?'neu':'pos';
+    rl.innerHTML+=`<div class="rank-item">
+      <div class="rank-num">${r.rank}</div>
+      <div class="rank-body">
+        <div class="rank-name">${r.nome}</div>
+        <div class="rank-reason">Gap <span class="${dc}">${r.gap.toFixed(1)}pp</span> abaixo · ${r.atual.toFixed(1)}% atual / ${r.meta}% meta</div>
+      </div>
+      <div class="prog-wrap" style="margin:0 10px"><div class="prog-fill" style="width:${Math.min(100,r.pct*4).toFixed(0)}%"></div></div>
+      <div>
+        <div class="rank-valor">R$ ${f0(r.valor)}</div>
+        <div class="rank-pct">${r.pct.toFixed(1)}% do aporte</div>
+      </div>
+    </div>`;
+  });
+  if(pizzaAporteChart){pizzaAporteChart.destroy();pizzaAporteChart=null;}
+  const ctx=document.getElementById('pizzaAporte');
+  pizzaAporteChart=new Chart(ctx,{type:'doughnut',
+    data:{labels:result.map(r=>r.nome),datasets:[{data:result.map(r=>r.valor),backgroundColor:PAL,borderColor:'#0f1117',borderWidth:2}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'55%',
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`R$ ${f0(c.parsed)}`}}}
+    }
+  });
+  const ad=document.getElementById('antesDepois');
+  ad.innerHTML='';
+  result.slice(0,5).forEach(r=>{
+    const nova=r.atual+(r.valor/patTotal*100);
+    ad.innerHTML+=`<div class="abar" style="margin-bottom:10px">
+      <div class="abar-head"><span style="font-size:12px">${r.nome}</span>
+      <span style="font-size:11px;color:var(--muted)">${r.atual.toFixed(1)}% → <b style="color:var(--green)">${nova.toFixed(1)}%</b> / meta ${r.meta}%</span></div>
+      <div class="abar-track" style="height:8px">
+        <div class="abar-fill" style="width:${Math.min(98,r.atual/r.meta*100).toFixed(0)}%;opacity:.35"></div>
+        <div class="abar-fill" style="width:${Math.min(98,nova/r.meta*100).toFixed(0)}%;background:var(--green)"></div>
+        <div class="abar-meta" style="left:${Math.min(98,100).toFixed(0)}%"></div>
+      </div>
+    </div>`;
+  });
+}
+
+// ── CONFIG ──
+function buildCfgForm(){
+  function rows(elId,data){
+    const el=document.getElementById(elId);
+    if(!el)return;
+    el.innerHTML='';
+    data.forEach((r,i)=>{
+      el.innerHTML+=`<div class="srow">
+        <span class="slabel">${r.cat}</span>
+        <span style="font-size:11px;color:var(--muted);margin-right:4px">atual ${r.atual.toFixed(1)}%</span>
+        <input class="sinput" type="number" step="0.5" min="0" max="100" value="${r.meta}" data-group="${elId}" data-idx="${i}">
+        <span class="sunit">%</span>
+      </div>`;
+    });
+  }
+  rows('cfgMacro',CFG.macro);
+  rows('cfgFII',CFG.fiiSetores);
+  rows('cfgAcoes',CFG.acoesSetores);
+}
+
+function salvarCfg(){
+  [['cfgMacro','macro'],['cfgFII','fiiSetores'],['cfgAcoes','acoesSetores']].forEach(([gid,key])=>{
+    document.querySelectorAll(`[data-group="${gid}"]`).forEach(inp=>{
+      CFG[key][+inp.dataset.idx].meta=parseFloat(inp.value)||0;
+    });
+  });
+  saveCfg(CFG);
+  const msg=document.getElementById('savedMsg');
+  msg.style.opacity=1;
+  setTimeout(()=>msg.style.opacity=0,2000);
+  renderAlocBars('alocMacro2',CFG.macro,'macro');
+  renderAlocBars('alocMiniOverview',CFG.macro,'macro');
+  renderAlocBars('alocFII',CFG.fiiSetores,'fii');
+  renderAlocBars('alocAcoes',CFG.acoesSetores,'acoes');
+  renderLeituraRapida();
+  calcAporte();
+}
+
+function renderLeituraRapida(){
+  const el=document.getElementById('leituraRapida');
+  if(!el)return;
+  const gaps=CFG.macro.map(r=>({cat:r.cat,gap:r.meta-r.atual})).sort((a,b)=>b.gap-a.gap);
+  const top=gaps[0];
+  const exc=gaps.filter(g=>g.gap<-2);
+  let t=`<b>Prioridade de aporte:</b> ${top.cat} está ${top.gap.toFixed(1)}pp abaixo da meta — recebe a maior fatia.<br>`;
+  if(exc.length)t+=`<b>Excesso:</b> ${exc.map(e=>e.cat+' (+'+(e.gap*-1).toFixed(1)+'pp)').join(', ')} — redirecionar ao vencer.<br>`;
+  t+=`<b>Clique em qualquer barra</b> acima para ver os ativos daquele setor.`;
+  el.innerHTML=t;
+}
+
+// ── NAV ──
 function go(page){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.ntab').forEach(t=>t.classList.remove('active'));
   document.getElementById('p-'+page).classList.add('active');
-  const tabs=['dash','fiis','renda','aloc','prov'];
-  document.querySelectorAll('.nav-tab')[tabs.indexOf(page)].classList.add('active');
-  if(page==='dash')drawDash();
+  ['overview','aporte','fiis','renda','aloc','cfg'].forEach((p,i)=>{
+    document.querySelectorAll('.ntab')[i].classList.toggle('active',p===page);
+  });
   if(page==='renda')drawHist();
 }
 
-// init
+// ── BOOT ──
+makePizza('pizzaClasse',
+  CFG.macro.map(r=>r.cat),CFG.macro.map(r=>r.atual),PAL,
+  (setor)=>drillTo(setor,'macro'));
+makeLeg('legClasse',CFG.macro.map(r=>r.cat),PAL,true);
+
+makePizza('pizzaFII',
+  CFG.fiiSetores.map(r=>r.cat),CFG.fiiSetores.map(r=>r.atual),PAL,
+  (setor)=>drillTo(setor,'fii'));
+makeLeg('legFII',CFG.fiiSetores.map(r=>r.cat),PAL,true);
+
+makePizza('pizzaAcoes',
+  CFG.acoesSetores.map(r=>r.cat),CFG.acoesSetores.map(r=>r.atual),PAL,
+  (setor)=>drillTo(setor,'acoes'));
+makeLeg('legAcoes',CFG.acoesSetores.map(r=>r.cat),PAL,true);
+
+renderAlocBars('alocMiniOverview',CFG.macro,'macro');
+renderAlocBars('alocMacro2',CFG.macro,'macro');
+renderAlocBars('alocFII',CFG.fiiSetores,'fii');
+renderAlocBars('alocAcoes',CFG.acoesSetores,'acoes');
 renderFIITable();
-renderProvFII();
-renderProvAcoes();
-renderAlocMini();
-renderAloc('macro-aloc',macroRows);
-renderAloc('fii-aloc',fiiRows);
-renderAloc('acoes-aloc',acoesRows);
-drawDash();
+buildCfgForm();
+renderLeituraRapida();
+calcAporte();
 </script>
 </body>
 </html>
